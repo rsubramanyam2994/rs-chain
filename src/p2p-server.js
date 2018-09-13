@@ -14,8 +14,9 @@ class P2pServer {
     listen() {
         const server = new WebSocket.Server({port: P2P_PORT})
         server.on("connection", socket => this.connectSocket(socket))
+        // can listen to specific types of messages sent by web-socket-server
+        // can fire specifc code whenever new socket is added
         this.connectToPeers()
-        console.log(`Listening for peer to peer connection on ${P2P_PORT}`)
     }
 
     connectToPeers() {
@@ -30,13 +31,24 @@ class P2pServer {
         this.sockets.push(socket)
         console.log("Socket connected")
         this.messageHandler(socket)
-        socket.send(JSON.stringify(this.blockchain.chain))
+        this.sendChain(socket)
     }
 
     messageHandler(socket) {
         socket.on("message", (msg) => {
             const data = JSON.parse(msg)
-            console.log(msg)
+            // console.log(msg)
+            this.blockchain.replaceChain(data)
+        })
+    }
+
+    sendChain(socket) {
+        socket.send(JSON.stringify(this.blockchain.chain))
+    }
+
+    syncChains() {
+        this.sockets.forEach(socket => {
+            this.sendChain(socket) // socket includes self port also, how can you send a message to yourself?
         })
     }
 
