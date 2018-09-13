@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
     "dev-test": "nodemon test/dev-test.js",
     "test": "jest"
   },
@@ -23,6 +25,8 @@
     "nodemon": "^1.18.4"
   },
   "dependencies": {
-    "crypto-js": "^3.1.9-1"
+    "body-parser": "^1.18.3",
+    "crypto-js": "^3.1.9-1",
+    "express": "^4.16.3"
   }
 }
