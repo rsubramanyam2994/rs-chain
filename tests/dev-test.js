@@ -1,7 +1,5 @@
-const BlockChain = require("../src/blockchain")
+const Wallet = require("../src/wallet/wallet")
 
-bc = new BlockChain()
+const wallet = new Wallet()
 
-for (let i = 1; i <= 10; i++) {
-    console.log(bc.addBlock(`foo : ${i}`).toString())
-}
+console.log(wallet.toString())
