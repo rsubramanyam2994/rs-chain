@@ -7,7 +7,7 @@ class Transaction {
         this.outputs = []
     }
 
-    update(senderWallet, amount, recipient) {
+    update(senderWallet, recipient, amount) {
         const senderOutput = this.outputs.find(output => output.address === senderWallet.publicKey)
 
         if (amount > senderOutput.amount) { // if amount exceeds balance

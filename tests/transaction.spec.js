@@ -49,7 +49,7 @@ describe("Transaction", () => {
         beforeEach(() => {
             nextAmount = 20
             recipient = "n3xt"
-            transaction = transaction.update(wallet, nextAmount, recipient)
+            transaction = transaction.update(wallet, recipient, nextAmount)
         })
 
         it("subtracts nextAmount from sender's output", () => {
