@@ -17,6 +17,10 @@ class ChainUtil {
         return SHA256(`${JSON.stringify(data)}`).toString()
     }
 
+    static verifySignature (publicKey, signature, dataHash) {
+        return ec.keyFromPublic(publicKey, "hex").verify(dataHash, signature) // Why the hex conversion?
+    }
+
 }
 
 module.exports = ChainUtil

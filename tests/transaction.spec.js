@@ -23,15 +23,44 @@ describe("Transaction", () => {
         expect(transaction.input.amount).toEqual(wallet.balance)
     })
 
-    describe('transacting with an amount that exceeds the balance', () => {
+    it("validates a valid transaction", () => {
+        expect(Transaction.verifyTransaction(transaction)).toEqual(true)
+    })
+
+    it("invalidates a corrupt transaction", () => {
+        transaction.outputs[0].amount = "questionable-amount"
+        expect(Transaction.verifyTransaction(transaction)).toEqual(false)
+    })
+
+    describe("transacting with an amount that exceeds the balance", () => {
         beforeEach(() => {
             amount = 50000;
             transaction = Transaction.newTransaction(wallet, recipient, amount);
         });
 
-        it('does not create the transaction', () => {
+        it("does not create the transaction", () => {
             expect(transaction).toEqual(undefined);
         });
     });
+
+    describe("updating a transaction", () => {
+        let nextAmount, recipient
+
+        beforeEach(() => {
+            nextAmount = 20
+            recipient = "n3xt"
+            transaction = transaction.update(wallet, nextAmount, recipient)
+        })
+
+        it("subtracts nextAmount from sender's output", () => {
+            expect(transaction.outputs.find(o => o.address === wallet.publicKey).amount).toEqual(430)
+        })
+
+        it("sends nextAmount to sender", () => {
+            expect(transaction.outputs.find(o => o.address === recipient).amount).toEqual(20)
+        })
+
+
+    })
 
 })

@@ -7,6 +7,21 @@ class Transaction {
         this.outputs = []
     }
 
+    update(senderWallet, amount, recipient) {
+        const senderOutput = this.outputs.find(output => output.address === senderWallet.publicKey)
+
+        if (amount > senderOutput.amount) { // if amount exceeds balance
+            console.log(`Amount: ${amount} exceeds balance`)
+        }
+
+        senderOutput.amount = senderOutput.amount - amount
+        this.outputs.push({ amount, address: recipient })
+
+        Transaction.signTransaction(this, senderWallet)
+
+        return this
+    }
+
     static newTransaction(senderWallet, recipient, amount) { // this is a factory function right?
         const transaction = new this();
 
@@ -31,7 +46,13 @@ class Transaction {
             amount: senderWallet.balance,
             address: senderWallet.publicKey,
             signature: senderWallet.sign(ChainUtil.hash(transaction.outputs)) // hashing to pass in fixed length input
+            // Given ChainUtil.hash(transaction.outputs) which is the dataHash, can we find out what data it is?
+            // Checked, Seems like we can.
         }
+    }
+
+    static verifyTransaction(transaction) {
+        return ChainUtil.verifySignature(transaction.input.address, transaction.input.signature, ChainUtil.hash(transaction.outputs))
     }
 }
 
