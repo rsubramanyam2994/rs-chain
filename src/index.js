@@ -12,21 +12,23 @@ const app = express()
 
 app.use(bodyParser.json())
 
-const bc = new Blockchain()
-const p2pServer = new P2pServer(bc)
-const tp = new TransactionPool()
+
+const transactionPool = new TransactionPool()
+const blockchain = new Blockchain()
+
+const p2pServer = new P2pServer(blockchain, transactionPool)
 const wallet = new Wallet()
 
 app.get("/blocks", (req, res) => {
-    res.json(bc.chain)
+    res.json(blockchain.chain)
 })
 
 app.get("/transactions", (req, res) => {
-    res.json(tp.transactions)
+    res.json(transactionPool.transactions)
 })
 
 app.post("/mine", (req, res) => {
-    const block = bc.addBlock(req.body.data)
+    const block = blockchain.addBlock(req.body.data)
     console.log(`New block added ${block.toString()}`)
     p2pServer.syncChains()
     res.redirect("/blocks")
@@ -34,7 +36,8 @@ app.post("/mine", (req, res) => {
 
 app.post("/transact", (req, res) => {
     const { recipient, amount } = req.body
-    const transaction = wallet.createTransaction(recipient, amount, tp)
+    const transaction = wallet.createTransaction(recipient, amount, transactionPool)
+    p2pServer.broadcastTransaction(transaction)
     res.redirect("/transactions")
 })
 
