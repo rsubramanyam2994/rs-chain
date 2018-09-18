@@ -1,5 +1,4 @@
 const TransactionPool = require("../src/wallet/transaction-pool")
-const Transaction = require("../src/wallet/transaction")
 const Wallet = require("../src/wallet/wallet")
 
 describe("Transaction pool", () => {
@@ -8,8 +7,7 @@ describe("Transaction pool", () => {
     beforeEach(() => {
         tp = new TransactionPool()
         wallet = new Wallet()
-        transaction = Transaction.newTransaction(wallet, "some-recipient", 30)
-        tp.updateOrAddTransaction(transaction)
+        transaction = wallet.createTransaction("some-recipient", 30, tp)
     })
 
     it("adds new transaction to the pool", () => {
@@ -23,4 +21,33 @@ describe("Transaction pool", () => {
         expect(JSON.stringify(tp.transactions.find(t => t.id === transaction.id))).not.toEqual(oldTransaction)
     })
 
+    describe("mixing valid and corrupt transactions", () => {
+        let validTransactions
+
+        beforeEach(() => {
+            validTransactions = [...tp.transactions]
+
+            for (let i = 0; i < 6; i++) {
+                wallet = new Wallet()
+                transaction = wallet.createTransaction("some-other-recipient", 30, tp)
+                if (i % 2 === 0) {
+                    tp.transactions.forEach(t => {
+                        if (t.id === transaction.id) {
+                            t.input.amount = 99999
+                        }
+                    })
+                } else {
+                    validTransactions.push(transaction)
+                }
+            }
+        })
+
+        it("filters out invalid transactions", () => {
+            expect(JSON.stringify(tp.transactions)).not.toEqual(JSON.stringify(validTransactions))
+        })
+
+        it("grabs valid transactions", () => {
+            expect(tp.validTransactions().length).toEqual(validTransactions.length)
+        })
+    })
 })

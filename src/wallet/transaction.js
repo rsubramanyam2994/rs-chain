@@ -43,7 +43,7 @@ class Transaction {
     static signTransaction(transaction, senderWallet) {
         transaction.input = {
             timestamp: Date.now(),
-            amount: senderWallet.balance,
+            amount: senderWallet.balance, // doesn't this have to be continuosly reduced?
             address: senderWallet.publicKey,
             signature: senderWallet.sign(ChainUtil.hash(transaction.outputs)) // hashing to pass in fixed length input
             // Given ChainUtil.hash(transaction.outputs) which is the dataHash, can we find out what data it is?
