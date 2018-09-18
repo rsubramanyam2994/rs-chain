@@ -8,6 +8,9 @@ class Miner {
 
 
     // clear confirmed transactions from pool
+    // blockchain itself adds reward transaction, not any user's wallet, with the sender being the blockchain itself
+
+
 
     mine() {
         const validTransactions = this.transactionPool.validTransactions() // select only valid transactions from pool
