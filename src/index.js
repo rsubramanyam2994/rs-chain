@@ -5,13 +5,11 @@ const P2pServer = require("./p2p/p2p-server")
 const Wallet = require("./wallet/wallet")
 const TransactionPool = require("./wallet/transaction-pool")
 
-
 const HTTP_PORT = process.env.HTTP_PORT || 3001
 
 const app = express()
 
 app.use(bodyParser.json())
-
 
 const transactionPool = new TransactionPool()
 const blockchain = new Blockchain()
@@ -45,17 +43,31 @@ app.post("/transact", (req, res) => {
     res.redirect("/transactions")
 })
 
-// where is the part where the amount given to the recipient is added to his wallet? (where does accumulation happen?)
-// how to implement the case where every instance is not a wallet? Is the correct solution, the user should give his public key,
-// recipient and amount?
-// Transactions can say anything, how does each and every transaction reflect in every person's bitcoin wallet?
-// Is one transaction always per wallet? (seems like it has to be as the input is not an array)
-
-
-
-
 app.listen(HTTP_PORT, () => {
     console.log(`Listening on port: ${HTTP_PORT}`)
 })
 
 p2pServer.listen()
+
+// Existing flow
+// Blockchain
+// Call /mine and give it some data
+// It'll mine a new block, create hash based on last block and add it to the block chain
+// Blockchain is sent to all peers
+
+// Transaction
+// Call /transact and give it amount and recipient
+// Every instance of the application is a wallet
+// It'll append to existing transaction or create a new transaction based on whether any transaction already exists with
+//     input.address = wallet.publicKey
+// This transaction is added to the transaction pool of the running instance and is broadcasted to all peers
+
+// TODO:
+// 1. Mine block using set of transactions and then delete transactions
+// 2. Update wallet balance after mining a block?
+// 3. Where is the part where the amount given to the recipient is added to his wallet? (where does accumulation happen?)
+// 4. How to implement the case where every instance is not a wallet? Is the correct solution, the user should give his public key,
+//    recipient and amount?
+// 5. Is one transaction always per wallet? (seems like it has to be as the input is not an array)
+// 6. Transactions can say anything, how does each and every transaction reflect in every person's bitcoin wallet?
+

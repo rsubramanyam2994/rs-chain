@@ -53,7 +53,7 @@ class Block {
 
     static adjustDifficulty(lastBlock, currentTime) {
         return(lastBlock.timestamp + MINE_RATE > currentTime ? (lastBlock.difficulty + 1) : (lastBlock.difficulty - 1))
-    }
+    } // shouldn't this be based on an interval of time and so the difficulty won't keep fluctuating?
 
 }
 
