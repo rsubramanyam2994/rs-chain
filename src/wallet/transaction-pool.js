@@ -20,7 +20,6 @@ class TransactionPool {
     }
 
     validTransactions() {
-
         return this.transactions.filter(transaction => {
             const outputTotal = transaction.outputs.reduce((acc, output) => {
                 return (acc += output.amount)
@@ -38,6 +37,10 @@ class TransactionPool {
 
             return true
         })
+    }
+
+    clear() {
+        this.transactions = []
     }
 }
 
