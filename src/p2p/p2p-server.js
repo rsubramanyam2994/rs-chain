@@ -57,7 +57,7 @@ class P2pServer {
                 }
 
                 case MESSAGE_TYPES.clear_transactions: {
-                    this.transactionPool.updateOrAddTransaction(data.transaction)
+                    this.transactionPool.clear()
                     break
                 }
             }

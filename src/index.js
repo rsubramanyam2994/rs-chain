@@ -4,6 +4,7 @@ const Blockchain = require("./blockchain/blockchain")
 const P2pServer = require("./p2p/p2p-server")
 const Wallet = require("./wallet/wallet")
 const TransactionPool = require("./wallet/transaction-pool")
+const Miner = require("./miner/miner")
 
 const HTTP_PORT = process.env.HTTP_PORT || 3001
 
@@ -13,9 +14,10 @@ app.use(bodyParser.json())
 
 const transactionPool = new TransactionPool()
 const blockchain = new Blockchain()
-
 const p2pServer = new P2pServer(blockchain, transactionPool)
 const wallet = new Wallet()
+const miner = new Miner(blockchain, transactionPool, wallet, p2pServer)
+
 
 app.get("/blocks", (req, res) => {
     res.json(blockchain.chain)
@@ -33,6 +35,12 @@ app.post("/mine", (req, res) => {
     const block = blockchain.addBlock(req.body.data)
     console.log(`New block added ${block.toString()}`)
     p2pServer.syncChains()
+    res.redirect("/blocks")
+})
+
+app.get("/mine-transactions", (req, res) => {
+    const block = miner.mine()
+    console.log(`New block added: ${block}`)
     res.redirect("/blocks")
 })
 
@@ -70,4 +78,6 @@ p2pServer.listen()
 //    recipient and amount?
 // 5. Is one transaction always per wallet? (seems like it has to be as the input is not an array)
 // 6. Transactions can say anything, how does each and every transaction reflect in every person's bitcoin wallet?
+// 7. After receiving a blockchain, we check for validity yes, do we also check for validity of individual transactions in the new blocks of something?
+//    Where does merkle trees come in here?
 
