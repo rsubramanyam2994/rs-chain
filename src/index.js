@@ -47,7 +47,9 @@ app.get("/mine-transactions", (req, res) => {
 app.post("/transact", (req, res) => {
     const { recipient, amount } = req.body
     const transaction = wallet.createTransaction(recipient, amount, transactionPool) // Here basically, every instance of the application is one wallet
-    p2pServer.broadcastTransaction(transaction)
+    if (transaction) {
+        p2pServer.broadcastTransaction(transaction)
+    }
     res.redirect("/transactions")
 })
 
@@ -69,6 +71,15 @@ p2pServer.listen()
 // It'll append to existing transaction or create a new transaction based on whether any transaction already exists with
 //     input.address = wallet.publicKey
 // This transaction is added to the transaction pool of the running instance and is broadcasted to all peers
+// Within a transaction, output balance for the input address is continuosly reduced
+
+// Mining
+// Call /mine-transactions
+// Reward plus all valid transactions in the transaction pool are mined into a block
+// Blockchain is updated and sent to peers, clear transactions message is sent to all peers by the one who
+//   mined the block
+
+
 
 // TODO:
 // 1. Mine block using set of transactions and then delete transactions

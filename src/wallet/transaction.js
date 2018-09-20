@@ -12,7 +12,8 @@ class Transaction {
         const senderOutput = this.outputs.find(output => output.address === senderWallet.publicKey)
 
         if (amount > senderOutput.amount) { // if amount exceeds balance
-            console.log(`Amount: ${amount} exceeds balance`)
+            console.log(`Amount: ${amount} exceeds balance within a transaction`)
+            return
         }
 
         senderOutput.amount = senderOutput.amount - amount
@@ -50,7 +51,7 @@ class Transaction {
     static signTransaction(transaction, senderWallet) {
         transaction.input = {
             timestamp: Date.now(),
-            amount: senderWallet.balance, // doesn't this have to be continuosly reduced?
+            amount: senderWallet.balance,
             address: senderWallet.publicKey,
             signature: senderWallet.sign(ChainUtil.hash(transaction.outputs)) // hashing to pass in fixed length input
             // Given ChainUtil.hash(transaction.outputs) which is the dataHash, can we find out what data it is?

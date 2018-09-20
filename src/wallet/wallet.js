@@ -22,7 +22,7 @@ class Wallet {
 
     createTransaction(recipient, amount, transactionPool) {
         if (amount > this.balance) {
-            console.log(`Amount: ${amount} exceeds balance: ${this.balance}`)
+            console.log(`Amount: ${amount} exceeds wallet balance: ${this.balance}`)
             return
         }
 
@@ -30,6 +30,7 @@ class Wallet {
 
         if (transaction) {
             transaction.update(this, recipient, amount) // basically transaction with same input address are grouped into one
+            // does above do an in-place update by reference to the transactionPool array?
         } else {
             transaction = Transaction.newTransaction(this, recipient, amount)
             transactionPool.updateOrAddTransaction(transaction)
@@ -37,6 +38,21 @@ class Wallet {
 
         return transaction
     }
+
+    // calculateBalance(blockchain) {
+    //     let balance = this.balance
+    //     let transactions = []
+    //
+    //     blockchain.chain.forEach(
+    //         block.data.forEach(transaction => {
+    //             transactions.push(transaction)
+    //         })
+    //     )
+    //
+    //     const walletInputTransactions = transactions.filter(t => t.input.address == this.publicKey)
+    //
+    //
+    // }
 
     static blockchainWallet() {
         const blockchainWallet = new this();

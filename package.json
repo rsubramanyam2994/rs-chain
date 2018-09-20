@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "node src/index.js",
+    "dev": "node $NODE_DEBUG_OPTION src/index.js",
     "dev-test": "nodemon test/dev-test.js",
     "test": "jest"
   },
