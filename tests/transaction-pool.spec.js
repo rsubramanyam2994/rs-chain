@@ -1,42 +1,44 @@
 const TransactionPool = require("../src/wallet/transaction-pool")
 const Wallet = require("../src/wallet/wallet")
+const Blockchain = require("../src/blockchain/blockchain")
 
 describe("Transaction pool", () => {
-    let tp, wallet, transaction
+    let transactionPool, wallet, transaction, blockchain
 
     beforeEach(() => {
-        tp = new TransactionPool()
+        transactionPool = new TransactionPool()
         wallet = new Wallet()
-        transaction = wallet.createTransaction("some-recipient", 30, tp)
+        blockchain = new Blockchain()
+        transaction = wallet.createTransaction("some-recipient", 30, blockchain, transactionPool)
     })
 
     it("adds new transaction to the pool", () => {
-        expect(tp.transactions.find(t => t.id === transaction.id)).toEqual(transaction)
+        expect(transactionPool.transactions.find(t => t.id === transaction.id)).toEqual(transaction)
     })
 
     it("updates a transaction in the pool", () => {
         const oldTransaction = JSON.stringify(transaction)
         transaction.update(wallet, "some-other-recipient", 40)
-        tp.updateOrAddTransaction(transaction)
-        expect(JSON.stringify(tp.transactions.find(t => t.id === transaction.id))).not.toEqual(oldTransaction)
+        transactionPool.updateOrAddTransaction(transaction)
+        expect(JSON.stringify(transactionPool.transactions.find(t => t.id === transaction.id))).not.toEqual(oldTransaction)
     })
 
     it("clears transactions", () => {
-        tp.clear()
-        expect(tp.transactions).toEqual([])
+        transactionPool.clear()
+        expect(transactionPool.transactions).toEqual([])
     })
 
     describe("mixing valid and corrupt transactions", () => {
         let validTransactions
 
         beforeEach(() => {
-            validTransactions = [...tp.transactions]
+            validTransactions = [...transactionPool.transactions]
 
             for (let i = 0; i < 6; i++) {
                 wallet = new Wallet()
-                transaction = wallet.createTransaction("some-other-recipient", 30, tp)
+                transaction = wallet.createTransaction("some-other-recipient", 30, blockchain, transactionPool)
                 if (i % 2 === 0) {
-                    tp.transactions.forEach(t => {
+                    transactionPool.transactions.forEach(t => {
                         if (t.id === transaction.id) {
                             t.input.amount = 99999
                         }
@@ -48,11 +50,11 @@ describe("Transaction pool", () => {
         })
 
         it("filters out invalid transactions", () => {
-            expect(JSON.stringify(tp.transactions)).not.toEqual(JSON.stringify(validTransactions))
+            expect(JSON.stringify(transactionPool.transactions)).not.toEqual(JSON.stringify(validTransactions))
         })
 
         it("grabs valid transactions", () => {
-            expect(tp.validTransactions().length).toEqual(validTransactions.length)
+            expect(transactionPool.validTransactions().length).toEqual(validTransactions.length)
         })
     })
 })

@@ -9,6 +9,8 @@ class Transaction {
     }
 
     update(senderWallet, recipient, amount) {
+
+        // checking balance in previous entry output of transaction
         const senderOutput = this.outputs.find(output => output.address === senderWallet.publicKey)
 
         if (amount > senderOutput.amount) { // if amount exceeds balance

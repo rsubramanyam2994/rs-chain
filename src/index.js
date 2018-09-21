@@ -46,7 +46,7 @@ app.get("/mine-transactions", (req, res) => {
 
 app.post("/transact", (req, res) => {
     const { recipient, amount } = req.body
-    const transaction = wallet.createTransaction(recipient, amount, transactionPool) // Here basically, every instance of the application is one wallet
+    const transaction = wallet.createTransaction(recipient, amount, blockchain, transactionPool) // Here basically, every instance of the application is one wallet
     if (transaction) {
         p2pServer.broadcastTransaction(transaction)
     }
