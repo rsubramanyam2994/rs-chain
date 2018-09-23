@@ -47,7 +47,7 @@ class Transaction {
 
     static rewardTransaction(minerWallet, blockchainWallet) {
         return Transaction.transactionWithOutputs(blockchainWallet,
-            [{ amount: MINING_REWARD, address:  minerWallet.publicKey}]) // so this transaction will
+            [{ amount: MINING_REWARD, address:  minerWallet.publicKey}])
     }
 
     static signTransaction(transaction, senderWallet) {
@@ -56,8 +56,6 @@ class Transaction {
             amount: senderWallet.balance,
             address: senderWallet.publicKey,
             signature: senderWallet.sign(ChainUtil.hash(transaction.outputs)) // hashing to pass in fixed length input
-            // Given ChainUtil.hash(transaction.outputs) which is the dataHash, can we find out what data it is?
-            // Checked, Seems like we can.
         }
     }
 

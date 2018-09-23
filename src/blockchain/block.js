@@ -23,7 +23,7 @@ class Block {
     }
 
     static genesis() {
-        return new this("genesis-timestamp", "genesis-lastHash", "genesis-hash", ["genesis-data"], 0, DIFFICULTY)
+        return new this("genesis-timestamp", "genesis-lastHash", "genesis-hash", "genesis-data", 0, DIFFICULTY)
     }
 
     static mineBlock(lastBlock, data) {

@@ -44,15 +44,12 @@ class Wallet {
         let balance = this.balance
         let transactions = []
 
-
-        if (blockchain.chain.length === 1) {
-            return balance
-        }
-
         blockchain.chain.forEach(block => {
-            block.data.forEach(transaction => {
-                transactions.push(transaction)
-            })
+            if (!(block.data === "genesis-data")) { // TODO: what's the correct thing todo here?
+                block.data.forEach(transaction => {
+                    transactions.push(transaction)
+                })
+            }
         })
 
         const walletInputTransactions = transactions.filter(t => t.input.address === this.publicKey)

@@ -80,15 +80,12 @@ p2pServer.listen()
 //   mined the block
 
 
-
 // TODO:
-// 1. Mine block using set of transactions and then delete transactions
-// 2. Update wallet balance after mining a block?
-// 3. Where is the part where the amount given to the recipient is added to his wallet? (where does accumulation happen?)
-// 4. How to implement the case where every instance is not a wallet? Is the correct solution, the user should give his public key,
+// 1. Update recipient wallet balance after mining a block? Where is the part where the amount given to the recipient is added to his wallet?
+//    (where does accumulation happen?). A GET ‘/balance’ endpoint that allows the user to calculate their balance based on the blockchain,
+//    and view it at any time.
+// 2. How to implement the case where every instance is not a wallet? Is the correct solution, the user should give his public key,
 //    recipient and amount?
-// 5. Is one transaction always per wallet? (seems like it has to be as the input is not an array)
-// 6. Transactions can say anything, how does each and every transaction reflect in every person's bitcoin wallet?
-// 7. After receiving a blockchain, we check for validity yes, do we also check for validity of individual transactions in the new blocks of something?
-//    Where does merkle trees come in here?
+// 3. Where does merkle trees come in here?
+// 4. For the instance who receives a transaction through broadcast, how is his wallet balance updated? Check if that happens correctly, else implement.
 
